@@ -5,25 +5,25 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+import { CreateUserDto, LoginUserDto, registerUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 
 import * as bcryptsjs from 'bcryptjs';
 import { hasUncaughtExceptionCaptureCallback } from 'process';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './interfaces/jwt-payload';
+import { LoginResponse } from './interfaces/login-response.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    private jwtService: JwtService,
   ) {}
 
   async create(createUser: CreateUserDto): Promise<User> {
-    console.log(createUser);
-
     try {
       const { password, ...userData } = createUser;
 
@@ -39,19 +39,35 @@ export class AuthService {
       return user;
     } catch (error) {
       if (error.code === 11000) {
-        throw new BadRequestException(`${createUser.email} already exist`);
+        //throw new BadRequestException(`${createUser.email} already exist`);
+        throw new BadRequestException(error);
       }
       throw new InternalServerErrorException('Error terrible');
     }
   }
 
-  async login(loginUser: LoginUserDto) {
+  async register(user: registerUserDto): Promise<LoginResponse> {
+    const usuario = await this.create(user);
+
+    return {
+      user: usuario,
+      token: this.getJWT({ id: usuario._id }),
+    };
+  }
+
+  async login(loginUser: LoginUserDto): Promise<LoginResponse> {
     const { email, password } = loginUser;
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new UnauthorizedException('Credenciales no validas - email');
     }
-    return 'Credenciales correctas';
+    if (!bcryptsjs.compareSync(password, user.password)) {
+      throw new UnauthorizedException('Credenciales no validas - password');
+    }
+
+    const { password: _, ...rest } = user.toJSON();
+
+    return { user: rest, token: this.getJWT({ id: user._id }) };
   }
 
   findAll() {
@@ -62,11 +78,16 @@ export class AuthService {
     return `This action returns a #${id} auth`;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+  // update(id: number, updateAuthDto: UpdateAuthDto) {
+  //   return `This action updates a #${id} auth`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} auth`;
+  }
+
+  getJWT(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload);
+    return token;
   }
 }
