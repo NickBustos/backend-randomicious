@@ -35,7 +35,7 @@ export class AuthService {
       await newUser.save();
 
       const { password: _, ...user } = newUser.toJSON();
-
+      console.log('WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING')
       return user;
     } catch (error) {
       if (error.code === 11000) {
@@ -70,8 +70,8 @@ export class AuthService {
     return { user: rest, token: this.getJWT({ id: user._id }) };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  findAll(): Promise<User[]> {
+    return this.userModel.find();
   }
 
   findOne(id: number) {
