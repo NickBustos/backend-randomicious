@@ -35,12 +35,16 @@ export class AuthService {
       await newUser.save();
 
       const { password: _, ...user } = newUser.toJSON();
-      console.log('WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING')
+      console.log(
+        'WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING WORKING',
+      );
       return user;
     } catch (error) {
       if (error.code === 11000) {
-        //throw new BadRequestException(`${createUser.email} already exist`);
-        throw new BadRequestException(error);
+        throw new BadRequestException(
+          `El email ${createUser.email} ya esta registrado`,
+        );
+        //throw new BadRequestException(error);
       }
       throw new InternalServerErrorException('Error terrible');
     }
