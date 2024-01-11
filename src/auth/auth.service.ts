@@ -21,7 +21,7 @@ export class AuthService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async create(createUser: CreateUserDto): Promise<User> {
     try {
@@ -63,10 +63,10 @@ export class AuthService {
     const { email, password } = loginUser;
     const user = await this.userModel.findOne({ email });
     if (!user) {
-      throw new UnauthorizedException('Credenciales no validas - email');
+      throw new UnauthorizedException('dsCredenciales no validas - email', 'Credenciales no validas - email');
     }
     if (!bcryptsjs.compareSync(password, user.password)) {
-      throw new UnauthorizedException('Credenciales no validas - password');
+      throw new UnauthorizedException('asCredenciales no validas - password', 'Credenciales no validas - password');
     }
 
     const { password: _, ...rest } = user.toJSON();
