@@ -1,7 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-Injectable()
+Injectable();
 
-export class RecipesServces{
+export class RecipesServces {
+
+    
 
 }
