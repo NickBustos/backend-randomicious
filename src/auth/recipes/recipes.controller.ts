@@ -1,11 +1,25 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateRecipeDto } from '../dto/createRecipe.dto';
+import { Recipe } from '../interfaces/recipe.interface';
+import { RecipesServces } from './recipes.service';
 
-@Controller('translate')
+@Controller('recipes')
 export class RecipesController {
-  constructor() {}
+  constructor(private readonly recipes: RecipesServces) {}
 
   @Post()
-  async translate(@Body() body: { text: string[]; targetLanguage: string }) {
-    return {};
+  @UseInterceptors(FileInterceptor('image'))
+  async createRecipe(
+    @Body() body: CreateRecipeDto,
+    @UploadedFile() image,
+  ): Promise<Recipe> {
+    return this.recipes.createRecipe(body, image);
   }
 }
