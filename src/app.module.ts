@@ -15,7 +15,7 @@ import { RecipesModule } from './auth/recipes/recipes.module';
     AuthModule,
 
     TranslatorModule,
-    
+
     RecipesModule,
   ],
   controllers: [],

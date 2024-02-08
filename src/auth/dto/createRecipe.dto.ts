@@ -21,11 +21,11 @@ export class CreateRecipeDto {
   ingredients: [{ ingredients: string; quantity: string }];
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   portions: number;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   time: number;
 
   @IsOptional()

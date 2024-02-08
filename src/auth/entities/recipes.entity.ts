@@ -18,10 +18,10 @@ export class RecipeEnt extends Document {
   instructions: string;
 
   @Prop({ required: true })
-  portions: number;
+  portions: string;
 
   @Prop({ required: true })
-  time: number;
+  time: string;
 
   @Prop({ required: false })
   calories: number;

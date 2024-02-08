@@ -4,6 +4,9 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  ParseFilePipe,
+  FileTypeValidator,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateRecipeDto } from '../dto/createRecipe.dto';
@@ -18,7 +21,15 @@ export class RecipesController {
   @UseInterceptors(FileInterceptor('image'))
   async createRecipe(
     @Body() body: CreateRecipeDto,
-    @UploadedFile() image,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    image,
   ): Promise<Recipe> {
     return this.recipes.createRecipe(body, image);
   }
