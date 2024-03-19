@@ -7,6 +7,8 @@ import {
   ParseFilePipe,
   FileTypeValidator,
   MaxFileSizeValidator,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateRecipeDto } from '../dto/createRecipe.dto';
@@ -32,5 +34,10 @@ export class RecipesController {
     image,
   ): Promise<Recipe> {
     return this.recipes.createRecipe(body, image);
+  }
+  
+  @Get(':userId')
+  async findByUserId(@Param('userId') userId: string): Promise<Recipe[]> {
+    return this.recipes.getRecipe(userId);
   }
 }

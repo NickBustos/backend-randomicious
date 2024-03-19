@@ -30,4 +30,8 @@ export class RecipesServces {
     await newRecipe.save();
     return newRecipe;
   }
+
+  async getRecipe(userId: string): Promise<Recipe[]> {
+    return this.recipeModel.find({ userId }).exec();
+  }
 }
