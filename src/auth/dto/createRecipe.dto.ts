@@ -30,7 +30,7 @@ export class CreateRecipeDto {
 
   @IsOptional()
   @IsNumber()
-  calories: number;
+  calories?: number;
 
   @IsOptional()
   @IsString()
@@ -38,5 +38,5 @@ export class CreateRecipeDto {
 
   @IsOptional()
   @IsMimeType()
-  image?: Buffer; // La imagen será manejada como un buffer
+  image?: Buffer;
 }

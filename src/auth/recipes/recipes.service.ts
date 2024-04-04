@@ -4,6 +4,7 @@ import { Recipe } from '../interfaces/recipe.interface';
 import { Model } from 'mongoose';
 import { CreateRecipeDto } from '../dto/createRecipe.dto';
 import { RecipeEnt } from '../entities/recipes.entity';
+import { UpdateRecipeDto } from '../dto/updateRecipe.dto';
 
 Injectable();
 
@@ -33,5 +34,42 @@ export class RecipesServces {
 
   async getRecipe(userId: string): Promise<Recipe[]> {
     return this.recipeModel.find({ userId }).exec();
+  }
+
+  async getRecipeById(recipeId: string): Promise<Recipe> {
+    return this.recipeModel
+      .findById(recipeId)
+      .select('userId name ingredients instructions portions time image')
+      .exec();
+  }
+
+  async updateRecipe(
+    recipeId: string,
+    updateRecipeDTO: UpdateRecipeDto,
+    image?,
+  ): Promise<Recipe> {
+    const updateFields: any = {
+      name: updateRecipeDTO.name,
+      ingredients: updateRecipeDTO.ingredients,
+      instructions: updateRecipeDTO.instructions,
+      portions: updateRecipeDTO.portions,
+      time: updateRecipeDTO.time,
+      calories: updateRecipeDTO.calories,
+    };
+
+    // Si hay una imagen, actualiza los campos de imagen
+    if (image) {
+      updateFields.image = {
+        data: image.buffer,
+        contentType: image.mimetype,
+      };
+    }
+
+    const updatedRecipe = await this.recipeModel.findByIdAndUpdate(
+      recipeId,
+      updateFields,
+      { new: true }, // Esto es para que devuelva el documento actualizado
+    );
+    return updatedRecipe;
   }
 }
