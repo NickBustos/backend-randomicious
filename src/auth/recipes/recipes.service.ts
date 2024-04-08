@@ -72,4 +72,8 @@ export class RecipesServces {
     );
     return updatedRecipe;
   }
+
+  async deleteRecipe(recipeId: string): Promise<void> {
+    await this.recipeModel.findByIdAndDelete(recipeId).exec();
+  }
 }

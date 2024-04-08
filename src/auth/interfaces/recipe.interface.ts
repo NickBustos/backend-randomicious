@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface Recipe extends Document {
+  _id: string;
   userId: string;
   name: string;
   ingredients: [{ ingredients: string; quantity: string }];

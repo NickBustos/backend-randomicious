@@ -11,6 +11,7 @@ import {
   Param,
   Patch,
   NotFoundException,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateRecipeDto } from '../dto/createRecipe.dto';
@@ -52,21 +53,22 @@ export class RecipesController {
     @UploadedFile() image?, // Elimina la configuración de ParseFilePipe aquí
   ): Promise<Recipe> {
     const existingRecipe = await this.recipes.getRecipeById(recipeId);
-  
-    // Verificar si existingRecipe es nulo
     if (existingRecipe) {
-      // Si no se proporciona una nueva imagen, mantener la imagen existente
       if (!image && existingRecipe.image) {
         body.image = existingRecipe.image;
       }
-  
-      // Llamar al servicio para actualizar la receta
-      return this.recipes.updateRecipe(recipeId, body as UpdateRecipeDto, image);
+      return this.recipes.updateRecipe(
+        recipeId,
+        body as UpdateRecipeDto,
+        image,
+      );
     } else {
-      // Si no se encontró ninguna receta, lanzar un error o manejar el caso según sea necesario
-      // Por ejemplo:
       throw new NotFoundException('Recipe not found');
     }
   }
-  
+
+  @Delete('delete/:recipeId')
+  async deleteRecipe(@Param('recipeId') recipeId: string): Promise<void> {
+    await this.recipes.deleteRecipe(recipeId);
+  }
 }
