@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { TranslatorModule } from './auth/translator/translator.module';
 import { RecipesModule } from './auth/recipes/recipes.module';
+import { EdamamModule } from './auth/edamam/edamam.module';
 
 @Module({
   imports: [
@@ -17,6 +18,8 @@ import { RecipesModule } from './auth/recipes/recipes.module';
     TranslatorModule,
 
     RecipesModule,
+
+    EdamamModule,
   ],
   controllers: [],
   providers: [],
