@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 export interface Edamam extends Document {
-  _id: string;
   userId: string;
+  title: string;
   ingredientes: [{ ingredients: string; quantity: string; mesure: string }];
   portions: string;
   time: string;

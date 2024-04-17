@@ -1,20 +1,34 @@
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export const EdamamSchema = new mongoose.Schema({
-  _id: { type: String, required: false },
-  userId: { type: String, required: true },
-  ingredientes: [
-    {
-      type: { ingredients: String, quantity: String, mesure: String },
-      required: true,
-    },
-  ],
-  portions: { type: String, required: true },
-  time: { type: String, required: true },
-  calories: { type: String, required: true },
-  instructions: { type: String, required: true },
-  image: { type: String, required: true },
-  urlReceta: { type: String, required: true },
-});
+@Schema()
+export class EdamamEnt extends Document {
+  @Prop({ required: true })
+  userId: string;
 
-export const EdammaModel = mongoose.model('Edammam', EdamamSchema);
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
+  ingredientes: [{ ingredients: string; quantity: string; mesure: string }];
+
+  @Prop({ required: true })
+  portions: string;
+
+  @Prop({ required: true })
+  time: string;
+
+  @Prop({ required: false })
+  calories?: number;
+
+  @Prop({ required: true })
+  instructions: string;
+
+  @Prop({ required: true })
+  image: string;
+
+  @Prop({ required: true })
+  urlReceta: string;
+}
+
+export const EdamamSchema = SchemaFactory.createForClass(EdamamEnt);

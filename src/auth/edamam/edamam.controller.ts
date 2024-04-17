@@ -1,25 +1,22 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { EdamamService } from '../edamam/edamam.service';
 import { Edamam } from '../interfaces/edamam.interface';
-import { EdamamService } from './edamam.service';
-import { EdamamSchema } from '../entities/edamam.entity';
 
-
-@Controller('edamam')
+@Controller('Edammam')
 export class EdamamController {
-  constructor(private readonly edammamService: EdamamService) {}
+    constructor(private readonly edamamService: EdamamService) { }
 
-  @Post()
-  async create(@Body() recipeData: Edamam): Promise<Edamam> {
-    return this.edammamService.create(EdamamSchema);
-  }
+    @Post()
+    async createRecipe(@Body() recipeData: Edamam): Promise<Edamam> {
+        return this.edamamService.create(recipeData);
+    }
+    @Get()
+    async getAllRecipes(): Promise<Edamam[]> {
+        return this.edamamService.findAll();
+    }
 
-  @Get()
-  async findAll(): Promise<Edamam[]> {
-    return this.edammamService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Edamam> {
-    return this.edammamService.findOneById(id);
-  }
+    @Get(':userId')
+    async findByUserId(@Param('userId') userId: string): Promise<Edamam[]> {
+        return this.edamamService.findByUser(userId);
+    }
 }

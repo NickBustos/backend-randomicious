@@ -19,9 +19,10 @@ import { EdamamModule } from './auth/edamam/edamam.module';
 
     RecipesModule,
 
-    EdamamModule,
+    EdamamModule
+
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
