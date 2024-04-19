@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
 import { EdamamService } from '../edamam/edamam.service';
 import { Edamam } from '../interfaces/edamam.interface';
 
@@ -18,5 +18,10 @@ export class EdamamController {
     @Get(':userId')
     async findByUserId(@Param('userId') userId: string): Promise<Edamam[]> {
         return this.edamamService.findByUser(userId);
+    }
+
+    @Delete('delete/:recipeId')
+    async deleteEdammamRecipe(@Param('recipeId') recipeId: string) {
+        return this.edamamService.deleteRecipe(recipeId);
     }
 }

@@ -22,4 +22,9 @@ export class EdamamService {
     async findByUser(userId: string): Promise<Edamam[]> {
         return this.edamamModel.find({ userId }).exec();
     }
+
+    async deleteRecipe(recipeId: string): Promise<void> {
+        console.log(recipeId)
+        await this.edamamModel.findByIdAndDelete(recipeId).exec();
+      }
 }
