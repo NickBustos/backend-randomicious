@@ -21,7 +21,7 @@ export class AuthService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async create(createUser: CreateUserDto): Promise<User> {
     try {
@@ -63,10 +63,16 @@ export class AuthService {
     const { email, password } = loginUser;
     const user = await this.userModel.findOne({ email });
     if (!user) {
-      throw new UnauthorizedException('dsCredenciales no validas - email', 'Credenciales no validas - email');
+      throw new UnauthorizedException(
+        'dsCredenciales no validas - email',
+        'Credenciales no validas - email',
+      );
     }
     if (!bcryptsjs.compareSync(password, user.password)) {
-      throw new UnauthorizedException('asCredenciales no validas - password', 'Credenciales no validas - password');
+      throw new UnauthorizedException(
+        'asCredenciales no validas - password',
+        'Credenciales no validas - password',
+      );
     }
 
     const { password: _, ...rest } = user.toJSON();
@@ -78,14 +84,15 @@ export class AuthService {
     return this.userModel.find();
   }
 
-  async findUserById( id: string ) {
-    const user = await this.userModel.findById( id );
+  async findUserById(id: string) {
+    const user = await this.userModel.findById(id);
     const { password, ...rest } = user.toJSON();
     return rest;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} auth`;
+    return this.userModel.findById(id);
+    // return `This action returns a #${id} auth`;
   }
 
   // update(id: number, updateAuthDto: UpdateAuthDto) {
@@ -101,10 +108,8 @@ export class AuthService {
     return token;
   }
 
-  getJwtToken( payload: JwtPayload ) {
+  getJwtToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;
   }
-
-  
 }

@@ -18,6 +18,27 @@ export class User {
 
   @Prop({ type: [String], default: ['user'] })
   roles: string[];
+
+  @Prop({ default: '0' })
+  followers: string;
+
+  @Prop({ default: '0' })
+  follows: string;
+
+  @Prop({ default: '0' })
+  recipesCreated: string;
+
+  @Prop({ default: '0' })
+  savedRecipes: string;
+
+  @Prop({ default: '' })
+  description: string;
+
+  // @Prop({ type: { data: Buffer, contentType: String, required: false } })
+  // image: {
+  //   data: Buffer;
+  //   contentType: string;
+  // };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
