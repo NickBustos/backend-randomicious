@@ -2,18 +2,23 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateUserDto, LoginUserDto, registerUserDto } from './dto';
+import {
+  CreateUserDto,
+  LoginUserDto,
+  UpdateUserDto,
+  registerUserDto,
+} from './dto';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 
 import * as bcryptsjs from 'bcryptjs';
-import { hasUncaughtExceptionCaptureCallback } from 'process';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './interfaces/jwt-payload';
-import { LoginResponse } from './interfaces/login-response.interface';
+import { JwtPayload } from '../interfaces/jwt-payload';
+import { LoginResponse } from '../interfaces/login-response.interface';
 
 @Injectable()
 export class AuthService {
@@ -48,6 +53,32 @@ export class AuthService {
       }
       throw new InternalServerErrorException('Error terrible');
     }
+  }
+
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    image?,
+  ): Promise<User> {
+    const user = await this.userModel.findById(id);
+
+    const updateFields: any = {
+      name: updateUserDto.name,
+      description: updateUserDto.description,
+    };
+
+    if (image) {
+      updateFields.image = {
+        data: image.buffer,
+        contentType: image.mimetype,
+      };
+    }
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.userModel.findByIdAndUpdate(id, updateFields);
   }
 
   async register(user: registerUserDto): Promise<LoginResponse> {

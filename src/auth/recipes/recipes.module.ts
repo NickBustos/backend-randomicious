@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { RecipesController } from './recipes.controller';
 import { RecipesServces } from './recipes.service';
-import { RecipeEnt, RecipeSchema } from '../entities/recipes.entity';
+import { RecipeEnt, RecipeSchema } from './entities/recipes.entity';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from '../interfaces/recipe.interface';
 import { Model } from 'mongoose';
-import { CreateRecipeDto } from '../dto/createRecipe.dto';
-import { RecipeEnt } from '../entities/recipes.entity';
-import { UpdateRecipeDto } from '../dto/updateRecipe.dto';
+import { CreateRecipeDto } from './dto/createRecipe.dto';
+import { RecipeEnt } from './entities/recipes.entity';
+import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 
 Injectable();
 

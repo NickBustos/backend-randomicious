@@ -34,11 +34,11 @@ export class User {
   @Prop({ default: '' })
   description: string;
 
-  // @Prop({ type: { data: Buffer, contentType: String, required: false } })
-  // image: {
-  //   data: Buffer;
-  //   contentType: string;
-  // };
+  @Prop({ type: { data: Buffer, contentType: String } })
+  image?: {
+    data: Buffer;
+    contentType: string;
+  };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

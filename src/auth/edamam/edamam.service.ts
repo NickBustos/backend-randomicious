@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Edamam } from '../interfaces/edamam.interface';
-import { EdamamEnt } from '../entities/edamam.entity';
+import { EdamamEnt } from './entities/edamam.entity';
 
 @Injectable()
 export class EdamamService {

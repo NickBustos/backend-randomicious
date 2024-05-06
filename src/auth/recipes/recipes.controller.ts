@@ -14,10 +14,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateRecipeDto } from '../dto/createRecipe.dto';
+import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { Recipe } from '../interfaces/recipe.interface';
 import { RecipesServces } from './recipes.service';
-import { UpdateRecipeDto } from '../dto/updateRecipe.dto';
+import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 
 @Controller('recipes')
 export class RecipesController {
