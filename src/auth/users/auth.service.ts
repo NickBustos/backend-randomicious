@@ -67,6 +67,13 @@ export class AuthService {
       description: updateUserDto.description,
     };
 
+    if (updateUserDto.recipesCreated) {
+      updateFields.recipesCreated = updateUserDto.recipesCreated;
+    }
+    if (updateUserDto.savedRecipes) {
+      updateFields.savedRecipes = updateUserDto.savedRecipes;
+    }
+
     if (image) {
       updateFields.image = {
         data: image.buffer,
@@ -123,12 +130,8 @@ export class AuthService {
 
   findOne(id: number) {
     return this.userModel.findById(id);
-    // return `This action returns a #${id} auth`;
   }
 
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
 
   remove(id: number) {
     return `This action removes a #${id} auth`;

@@ -8,5 +8,14 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  recipesCreated: string
+
+  @IsOptional()
+  @IsString()
+  savedRecipes: string
+  
   
 }
