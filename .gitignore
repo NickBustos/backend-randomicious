@@ -39,3 +39,5 @@ backend-randomicious/
 *.wt
 mongo/collection-0--3604489161521772297.wt
 *.wt
+
+.env

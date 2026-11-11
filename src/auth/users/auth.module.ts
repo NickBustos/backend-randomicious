@@ -5,10 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { AuthGuard } from '../guards/auth.guards';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, AuthGuard],
+  exports: [AuthService, AuthGuard],
   imports: [
     ConfigModule.forRoot(),
 
@@ -18,7 +20,7 @@ import { ConfigModule } from '@nestjs/config';
         schema: UserSchema,
       },
     ]),
-    JwtModule.register({  
+    JwtModule.register({
       global: true,
       secret: process.env.JWT_SEED,
       signOptions: { expiresIn: '6h' },

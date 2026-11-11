@@ -1,10 +1,6 @@
-import {
-  IsArray,
-  IsMimeType,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { toStringValue } from './createRecipe.dto';
 
 export class UpdateRecipeDto {
   @IsOptional()
@@ -16,10 +12,12 @@ export class UpdateRecipeDto {
   ingredients?: { ingredients: string; quantity: string }[];
 
   @IsOptional()
+  @Transform(toStringValue)
   @IsString()
   portions?: string;
 
   @IsOptional()
+  @Transform(toStringValue)
   @IsString()
   time?: string;
 
@@ -30,11 +28,4 @@ export class UpdateRecipeDto {
   @IsOptional()
   @IsString()
   instructions?: string;
-
-  @IsOptional()
-  @IsMimeType()
-  image?: {
-    data: Buffer;
-    contentType: string;
-  };;
 }

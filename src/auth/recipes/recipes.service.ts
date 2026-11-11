@@ -1,21 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from '../interfaces/recipe.interface';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { RecipeEnt } from './entities/recipes.entity';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 
-Injectable();
-
+@Injectable()
 export class RecipesServces {
   constructor(
     @InjectModel(RecipeEnt.name) private recipeModel: Model<Recipe>,
   ) {}
 
-  async createRecipe(createRecipeDTO: CreateRecipeDto, image): Promise<Recipe> {
+  async createRecipe(
+    userId: string,
+    createRecipeDTO: CreateRecipeDto,
+    image?: Express.Multer.File,
+  ): Promise<Recipe> {
     const newRecipe = new this.recipeModel({
-      userId: createRecipeDTO.userId,
+      userId,
       name: createRecipeDTO.name,
       ingredients: createRecipeDTO.ingredients,
       instructions: createRecipeDTO.instructions,
@@ -36,7 +39,8 @@ export class RecipesServces {
     return this.recipeModel.find({ userId }).exec();
   }
 
-  async getRecipeById(recipeId: string): Promise<Recipe> {
+  async getRecipeById(recipeId: string): Promise<Recipe | null> {
+    if (!isValidObjectId(recipeId)) return null;
     return this.recipeModel
       .findById(recipeId)
       .select('userId name ingredients instructions portions time image')
@@ -46,7 +50,7 @@ export class RecipesServces {
   async updateRecipe(
     recipeId: string,
     updateRecipeDTO: UpdateRecipeDto,
-    image?,
+    image?: Express.Multer.File,
   ): Promise<Recipe> {
     const updateFields: any = {
       name: updateRecipeDTO.name,
@@ -57,7 +61,7 @@ export class RecipesServces {
       calories: updateRecipeDTO.calories,
     };
 
-    // Si hay una imagen, actualiza los campos de imagen
+    // Si llega una imagen nueva se reemplaza; si no, queda la anterior
     if (image) {
       updateFields.image = {
         data: image.buffer,
@@ -65,12 +69,9 @@ export class RecipesServces {
       };
     }
 
-    const updatedRecipe = await this.recipeModel.findByIdAndUpdate(
-      recipeId,
-      updateFields,
-      { new: true }, // Esto es para que devuelva el documento actualizado
-    );
-    return updatedRecipe;
+    return this.recipeModel.findByIdAndUpdate(recipeId, updateFields, {
+      new: true, // devuelve el documento ya actualizado
+    });
   }
 
   async deleteRecipe(recipeId: string): Promise<void> {

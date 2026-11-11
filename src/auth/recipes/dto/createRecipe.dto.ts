@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsMimeType,
@@ -7,10 +8,15 @@ import {
   IsString,
 } from 'class-validator';
 
+export const toStringValue = ({ value }) =>
+  value === undefined || value === null ? value : String(value);
+
 export class CreateRecipeDto {
-  @IsNotEmpty()
+  // Se ignora: el dueño de la receta sale del token.
+  // Se acepta solo para no romper versiones viejas de la app.
+  @IsOptional()
   @IsString()
-  userId: string;
+  userId?: string;
 
   @IsNotEmpty()
   @IsString()
@@ -21,12 +27,14 @@ export class CreateRecipeDto {
   ingredients: [{ ingredients: string; quantity: string }];
 
   @IsNotEmpty()
+  @Transform(toStringValue)
   @IsString()
-  portions: number;
+  portions: string;
 
   @IsNotEmpty()
+  @Transform(toStringValue)
   @IsString()
-  time: number;
+  time: string;
 
   @IsOptional()
   @IsNumber()
