@@ -1,46 +1,57 @@
-// import {
-//   IsArray,
-//   IsMimeType,
-//   IsNotEmpty,
-//   IsNumber,
-//   IsOptional,
-//   IsString,
-// } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
-// export class CreateRecipeDto {
-//   @IsNotEmpty()
-//   @IsString()
-//   userId: string;
+class IngredienteDto {
+  @IsString()
+  ingredients: string;
 
-//   @IsNotEmpty()
-//   @IsString()
-//   name: string;
+  @IsString()
+  quantity: string;
 
-//   @IsNotEmpty()
-//   @IsArray()
-//   ingredients: [{ ingredients: string; quantity: string; mesure: string }];
+  @IsOptional()
+  @IsString()
+  mesure?: string;
+}
 
-//   @IsNotEmpty()
-//   @IsString()
-//   portions: number;
+export class CreateEdamamDto {
+  // Se ignora: el dueño sale del token.
+  // Se acepta solo para no romper versiones viejas de la app.
+  @IsOptional()
+  @IsString()
+  userId?: string;
 
-//   @IsNotEmpty()
-//   @IsString()
-//   time: number;
+  @IsNotEmpty()
+  @IsString()
+  title: string;
 
-//   @IsOptional()
-//   @IsNumber()
-//   calories?: number;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => IngredienteDto)
+  ingredientes: IngredienteDto[];
 
-//   @IsOptional()
-//   @IsString()
-//   instructions: string;
+  @IsString()
+  portions: string;
 
-//   @IsOptional()
-//   @IsMimeType()
-//   image?: string;
+  @IsString()
+  time: string;
 
-//   @IsNotEmpty()
-//   @IsString()
-//   urlReceta: string;
-// }
+  @IsOptional()
+  @IsNumber()
+  calories?: number;
+
+  @IsString()
+  instructions: string;
+
+  @IsString()
+  image: string;
+
+  @IsString()
+  urlReceta: string;
+}

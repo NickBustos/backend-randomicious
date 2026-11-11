@@ -7,31 +7,24 @@ import {
   Patch,
   UseGuards,
   Request,
-  UnauthorizedException,
+  ForbiddenException,
   UseInterceptors,
   UploadedFile,
+  ParseFilePipe,
+  FileTypeValidator,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Delete } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '../guards/auth.guards';
-import {
-  registerUserDto,
-  LoginUserDto,
-  CreateUserDto,
-  UpdateUserDto,
-} from './dto';
+import { registerUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { LoginResponse } from '../interfaces/login-response.interface';
 import { User } from './entities/user.entity';
+import { CurrentUserId } from '../decorators/current-user-id.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Post()
-  create(@Body() createUser: CreateUserDto) {
-    return this.authService.create(createUser);
-  }
 
   @Post('/login')
   login(@Body() loginUser: LoginUserDto) {
@@ -41,11 +34,6 @@ export class AuthController {
   @Post('/register')
   register(@Body() registerUser: registerUserDto) {
     return this.authService.register(registerUser);
-  }
-
-  @Get()
-  findAll() {
-    return this.authService.findAll();
   }
 
   @UseGuards(AuthGuard)
@@ -59,37 +47,38 @@ export class AuthController {
     };
   }
 
+  // Cada usuario solo puede ver su propio perfil
+  @UseGuards(AuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string, @CurrentUserId() currentUserId: string) {
+    if (id !== currentUserId) {
+      throw new ForbiddenException();
+    }
     return this.authService.findUserById(id);
   }
 
- // @UseGuards(AuthGuard) // Usa el guardia JwtAuthGuard para proteger el endpoint
+  // Cada usuario solo puede editar su propio perfil
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Request() req: Request,
-    @UploadedFile() image?,
+    @CurrentUserId() currentUserId: string,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new FileTypeValidator({ fileType: /(png|jpeg|jpg)$/ }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    image?: Express.Multer.File,
   ) {
-    console.log(updateUserDto, ' Y esto es el id: ', id)
-    const user = req['user'] as User;
-    // if (user._id !== id) {
-    //   // El usuario autenticado no tiene permiso para editar este usuario
-    //   throw new UnauthorizedException(
-    //     'You are not authorized to update this user.',
-    //   );
-    // }
-    if (image) {
-      return this.authService.update(id, updateUserDto, image);
-    } else {
-      return this.authService.update(id, updateUserDto);
+    if (id !== currentUserId) {
+      throw new ForbiddenException();
     }
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return this.authService.update(id, updateUserDto, image);
   }
 }
